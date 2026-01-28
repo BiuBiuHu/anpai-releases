@@ -6,31 +6,43 @@
 
 ### 最新版本: v0.4.0
 
-| 芯片类型 | 下载链接 |
-|----------|----------|
-| **Apple Silicon (M1/M2/M3)** | [AnPai.life-notarized_0.4.0.dmg](https://github.com/BiuBiuHu/anpai-releases/releases/download/v0.4.0/AnPai.life-notarized_0.4.0.dmg) |
-| **Intel** | [AnPai.life_0.4.0_x64.dmg](https://github.com/BiuBiuHu/anpai-releases/releases/download/v0.4.0/AnPai.life_0.4.0_x64.dmg) |
+| 平台 | 芯片/架构 | 下载链接 |
+|------|----------|----------|
+| **macOS** | Apple Silicon (M1/M2/M3) | [AnPai.life-notarized_0.4.0.dmg](https://github.com/BiuBiuHu/anpai-releases/releases/download/v0.4.0/AnPai.life-notarized_0.4.0.dmg) |
+| **macOS** | Intel | [AnPai.life_0.4.0_x64.dmg](https://github.com/BiuBiuHu/anpai-releases/releases/download/v0.4.0/AnPai.life_0.4.0_x64.dmg) |
+| **Windows** | x64 | [AnPai.life_0.4.0_x64-setup.exe](https://github.com/BiuBiuHu/anpai-releases/releases/download/v0.4.0/AnPai.life_0.4.0_x64-setup.exe) |
 
 ## 🔧 安装说明
 
+### macOS
 1. 下载对应芯片版本的 DMG 文件
 2. 双击打开 DMG
 3. 将 AnPai.life 拖入 Applications 文件夹
 4. 打开应用即可使用
 
-> ✅ 所有版本均已通过 Apple 公证，可直接安装运行，无需关闭 Gatekeeper。
+> ✅ macOS 版本均已通过 Apple 公证，可直接安装运行。
+
+### Windows
+1. 下载 `.exe` 安装程序
+2. 双击运行安装
+3. 按提示完成安装
+
+> ⚠️ Windows 版本未签名，首次运行时可能会看到 SmartScreen 警告，点击 "更多信息" → "仍要运行" 即可。
 
 ## 📋 版本历史
 
-- **v0.4.0** - 高清图标更新、本地发布流程优化
+- **v0.4.0** - 高清图标更新、Windows 版本支持、本地发布流程优化
 - **v0.3.0** - 后台管理功能、Token 统计、邀请码管理
 
 ## 🔒 安全说明
 
-所有发布文件均已：
+**macOS 版本：**
 - ✅ 使用 Developer ID 证书签名
 - ✅ 通过 Apple 公证 (Notarization)
 - ✅ 附加 Staple 票据
+
+**Windows 版本：**
+- ⚠️ 未签名（需要购买代码签名证书）
 
 ## 📮 反馈
 
