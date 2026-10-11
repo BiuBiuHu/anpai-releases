@@ -4,13 +4,13 @@
 
 ## 📥 下载
 
-### 最新版本: v0.4.0
+### 最新版本: v0.4.2
 
 | 平台 | 芯片/架构 | 下载链接 |
 |------|----------|----------|
-| **macOS** | Apple Silicon (M1/M2/M3) | [AnPai.life-notarized_0.4.0.dmg](https://github.com/BiuBiuHu/anpai-releases/releases/download/v0.4.0/AnPai.life-notarized_0.4.0.dmg) |
-| **macOS** | Intel | [AnPai.life_0.4.0_x64.dmg](https://github.com/BiuBiuHu/anpai-releases/releases/download/v0.4.0/AnPai.life_0.4.0_x64.dmg) |
-| **Windows** | x64 | [AnPai.life_0.4.0_x64-setup.exe](https://github.com/BiuBiuHu/anpai-releases/releases/download/v0.4.0/AnPai.life_0.4.0_x64-setup.exe) |
+| **macOS** | Apple Silicon (M1/M2/M3) | [AnPai.life-notarized_0.4.2.dmg](https://github.com/BiuBiuHu/anpai-releases/releases/download/v0.4.2/AnPai.life-notarized_0.4.2.dmg) |
+| **macOS** | Intel | [AnPai.life_0.4.1_x64.dmg](https://github.com/BiuBiuHu/anpai-releases/releases/download/v0.4.1/AnPai.life_0.4.1_x64.dmg)（v0.4.1） |
+| **Windows** | x64 | [AnPai.life_0.4.0_x64-setup.exe](https://github.com/BiuBiuHu/anpai-releases/releases/download/v0.4.0/AnPai.life_0.4.0_x64-setup.exe)（v0.4.0） |
 
 ## 🔧 安装说明
 
@@ -31,6 +31,7 @@
 
 ## 📋 版本历史
 
+- **v0.4.2** - Apple Silicon 安装包与生产 Web 对齐，Developer ID 签名并公证
 - **v0.4.0** - 高清图标更新、Windows 版本支持、本地发布流程优化
 - **v0.3.0** - 后台管理功能、Token 统计、邀请码管理
 
