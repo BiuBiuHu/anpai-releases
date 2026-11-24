@@ -1,0 +1,82 @@
+name: Promote verified desktop 0.7.0
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/promote-desktop-070.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: desktop-stable-release
+  cancel-in-progress: false
+jobs:
+  promote:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: BiuBiuHu/anpai-releases
+    steps:
+      - name: Download exact signed draft and current feed
+        run: |
+          mkdir -p candidate previous
+          gh release view v0.7.0 --json body,isDraft > release.json
+          gh release download v0.7.0 --dir candidate
+          gh release download desktop-updates --pattern latest.json --dir previous
+      - name: Verify frozen source, bytes and monotonic feed
+        run: |
+          node <<'JS'
+          const fs=require('fs'),c=require('crypto'),assert=require('assert/strict');
+          const release=JSON.parse(fs.readFileSync('release.json'));
+          assert.ok(release.body.includes('Core source: 5c18e29d7bd6bad1cc348a0d7f271603df11451a'));
+          const sums={
+            'AnPai.life-notarized_0.7.0.dmg':'82925b2fb288b539257e82b657a8cebdd174ca38c5ca3a0690f11b70ab6301ac',
+            'AnPai.life.app.tar.gz':'d1354e9dca064ec6720f6cc1760e7dc8112865bbc7a0b7f48722fd7c8818dfa5',
+            'latest.json':'dcd6dbb692f7c2fe2440e76458ca0845d312af0316b657e8eb0cfa018922b261'
+          };
+          for(const [name,sha] of Object.entries(sums))
+            assert.equal(c.createHash('sha256').update(fs.readFileSync('candidate/'+name)).digest('hex'),sha,name);
+          const old=JSON.parse(fs.readFileSync('previous/latest.json')),next=JSON.parse(fs.readFileSync('candidate/latest.json'));
+          assert.equal(next.version,'0.7.0');
+          assert.deepEqual(Object.keys(next.platforms),['darwin-aarch64']);
+          const artifact=next.platforms['darwin-aarch64'];
+          assert.equal(artifact.url,'https://github.com/BiuBiuHu/anpai-releases/releases/download/v0.7.0/AnPai.life.app.tar.gz');
+          assert.ok(artifact.signature&&next.notes);
+          const compare=(a,b)=>{const x=a.split('.').map(Number),y=b.split('.').map(Number);for(let i=0;i<3;i++)if(x[i]!==y[i])return x[i]-y[i];return 0};
+          assert.ok(compare(next.version,old.version)>=0,'Stable channel cannot move backwards');
+          if(old.version===next.version)assert.deepEqual(old,next,'Same published version is immutable');
+          fs.writeFileSync('verification.json',JSON.stringify({passed:true,coreSource:'5c18e29d7bd6bad1cc348a0d7f271603df11451a',version:'0.7.0',previousVersion:old.version,hashes:sums},null,2));
+          JS
+      - name: Publish versioned assets before promoting stable channel
+        run: |
+          gh release edit v0.7.0 --draft=false --latest
+          node <<'JS'
+          const fs=require('fs'),c=require('crypto'),assert=require('assert/strict');
+          (async()=>{
+            const url='https://github.com/BiuBiuHu/anpai-releases/releases/download/v0.7.0/AnPai.life.app.tar.gz';
+            const r=await fetch(url);assert.equal(r.status,200);
+            assert.equal(c.createHash('sha256').update(Buffer.from(await r.arrayBuffer())).digest('hex'),'d1354e9dca064ec6720f6cc1760e7dc8112865bbc7a0b7f48722fd7c8818dfa5');
+          })().catch(e=>{console.error(e.message);process.exitCode=1});
+          JS
+          gh release upload desktop-updates candidate/latest.json --clobber
+      - name: Verify public stable metadata
+        run: |
+          node <<'JS'
+          const fs=require('fs'),assert=require('assert/strict');
+          (async()=>{
+            const r=await fetch('https://github.com/BiuBiuHu/anpai-releases/releases/download/desktop-updates/latest.json?verify=0.7.0-'+Date.now());
+            assert.equal(r.status,200);
+            const actual=await r.json(),expected=JSON.parse(fs.readFileSync('candidate/latest.json'));
+            assert.deepEqual(actual,expected);
+            fs.writeFileSync('published.json',JSON.stringify({passed:true,stableVersion:actual.version,coreSource:'5c18e29d7bd6bad1cc348a0d7f271603df11451a',checkedAt:new Date().toISOString()},null,2));
+            console.log('Signed desktop 0.7.0 published and stable feed verified');
+          })().catch(e=>{console.error(e.message);process.exitCode=1});
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: desktop-070-promotion-evidence
+          path: |
+            verification.json
+            published.json
+            previous/latest.json
